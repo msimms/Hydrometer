@@ -1,0 +1,23 @@
+build/
+DerivedData/
+Pods/
+
+## Various settings
+xcuserdata
+*.xccheckout
+*.moved-aside
+*.xcuserstate
+*.xcworkspacedata
+
+## Other
+*.moved-aside
+*.xccheckout
+*.xcscmblueprint
+*.lock
+
+## Obj-C/Swift specific
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
