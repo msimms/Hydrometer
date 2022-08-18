@@ -11,6 +11,8 @@
 		27196E0228AEA131003F47D8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27196E0128AEA131003F47D8 /* ContentView.swift */; };
 		27196E0428AEA132003F47D8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 27196E0328AEA132003F47D8 /* Assets.xcassets */; };
 		27196E0728AEA132003F47D8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 27196E0628AEA132003F47D8 /* Preview Assets.xcassets */; };
+		27196E0F28AEA546003F47D8 /* BluetoothScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27196E0D28AEA546003F47D8 /* BluetoothScanner.swift */; };
+		27196E1028AEA546003F47D8 /* BluetoothServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27196E0E28AEA546003F47D8 /* BluetoothServices.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +21,8 @@
 		27196E0128AEA131003F47D8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		27196E0328AEA132003F47D8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		27196E0628AEA132003F47D8 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		27196E0D28AEA546003F47D8 /* BluetoothScanner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BluetoothScanner.swift; path = ../../LibBluetooth/mac/Source_Swift/BluetoothScanner.swift; sourceTree = "<group>"; };
+		27196E0E28AEA546003F47D8 /* BluetoothServices.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BluetoothServices.swift; path = ../../LibBluetooth/mac/Source_Swift/BluetoothServices.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,6 +55,8 @@
 		27196DFE28AEA131003F47D8 /* Hydrometer */ = {
 			isa = PBXGroup;
 			children = (
+				27196E0D28AEA546003F47D8 /* BluetoothScanner.swift */,
+				27196E0E28AEA546003F47D8 /* BluetoothServices.swift */,
 				27196DFF28AEA131003F47D8 /* HydrometerApp.swift */,
 				27196E0128AEA131003F47D8 /* ContentView.swift */,
 				27196E0328AEA132003F47D8 /* Assets.xcassets */,
@@ -137,6 +143,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				27196E1028AEA546003F47D8 /* BluetoothServices.swift in Sources */,
+				27196E0F28AEA546003F47D8 /* BluetoothScanner.swift in Sources */,
 				27196E0228AEA131003F47D8 /* ContentView.swift in Sources */,
 				27196E0028AEA131003F47D8 /* HydrometerApp.swift in Sources */,
 			);
