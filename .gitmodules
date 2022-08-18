@@ -1,0 +1,3 @@
+[submodule "LibBluetooth"]
+	path = LibBluetooth
+	url = git@github.com:msimms/LibBluetooth.git
