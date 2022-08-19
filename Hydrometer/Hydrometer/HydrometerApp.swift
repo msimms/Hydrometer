@@ -26,14 +26,33 @@ class AppState : ObservableObject {
 	
 	/// Called when a sensor characteristic is updated.
 	func valueUpdated(peripheral: CBPeripheral, serviceId: CBUUID, value: Data) {
+		if  serviceId == CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER1) ||
+			serviceId == CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER2) ||
+			serviceId == CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER3) ||
+			serviceId == CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER4) ||
+			serviceId == CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER5) ||
+			serviceId == CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER6) ||
+			serviceId == CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER7) ||
+			serviceId == CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER8) {
+		}
 	}
-	
+
 	func startBluetoothScanning() -> BluetoothScanner {
 		let scanner = BluetoothScanner()
-		let interestingServices = [CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER)]
+		let interestingServices = [ CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER1),
+									CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER2),
+									CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER3),
+									CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER4),
+									CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER5),
+									CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER6),
+									CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER7),
+									CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER8) ]
 		
 		// Start scanning for the services that we are interested in.
-		scanner.startScanning(serviceIdsToScanFor: interestingServices, peripheralCallbacks: [peripheralDiscovered], serviceCallbacks: [serviceDiscovered], valueUpdatedCallbacks: [valueUpdated])
+		scanner.startScanning(serviceIdsToScanFor: interestingServices,
+							  peripheralCallbacks: [peripheralDiscovered],
+							  serviceCallbacks: [serviceDiscovered],
+							  valueUpdatedCallbacks: [valueUpdated])
 		return scanner
 	}
 }
