@@ -8,5 +8,17 @@
 	<string>App uses continued access to Bluetooth to communicate with the hydrometer.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>App uses Bluetooth to communicate with the hydrometer.</string>
+	<key>NSUbiquitousContainers</key>
+	<dict>
+		<key>iCloud.com.mjs-software.hydrometer</key>
+		<dict>
+			<key>NSUbiquitousContainerIsDocumentScopePublic</key>
+			<true/>
+			<key>NSUbiquitousContainerName</key>
+			<string>Hydrometer</string>
+			<key>NSUbiquitousContainerSupportedFolderLevels</key>
+			<string>Any</string>
+		</dict>
+	</dict>
 </dict>
 </plist>
