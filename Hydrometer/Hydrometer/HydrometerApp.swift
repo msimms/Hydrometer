@@ -17,28 +17,39 @@ class AppState : ObservableObject {
 	/// Utility function for building the URL to the log file.
 	func buildLogFileUrl(location: String) throws -> URL? {
 		
-		var logDirUrl: URL?
+		var logFileUrl: URL?
 		
 		// Build the URL for the vault's directory. If a location was provided then
 		// use it, otherwise assume the user's iCloud directory.
 		if location.count == 0 {
-			logDirUrl = FileManager.default.url(forUbiquityContainerIdentifier: nil)
-			if logDirUrl == nil {
+			logFileUrl = FileManager.default.url(forUbiquityContainerIdentifier: nil)
+			if logFileUrl == nil {
 				throw LogFileException.runtimeError("iCloud storage is disabled.")
 			}
 		}
 		else {
-			logDirUrl = URL(string: location)
+			logFileUrl = URL(string: location)
 		}
-		logDirUrl = logDirUrl?.appendingPathComponent("Hydrometer")
+		logFileUrl = logFileUrl?.appendingPathComponent("Hydrometer")
+		try FileManager.default.createDirectory(at: logFileUrl!, withIntermediateDirectories: true, attributes: nil)
 
 		// Build the URL for the vault's master file.
-		return logDirUrl?.appendingPathComponent("log.csv")
+		return logFileUrl?.appendingPathComponent("log.csv", isDirectory: false)
 	}
 
 	func createLogFile() {
 		do {
 			let logFileUrl = try buildLogFileUrl(location: "")
+
+			if !FileManager.default.fileExists(atPath: logFileUrl!.path) {
+
+				// Create the parent directory.
+				try FileManager.default.createDirectory(at: logFileUrl!, withIntermediateDirectories: true, attributes: nil)
+
+				// Write the heading string.
+				let headingStr = ""
+				try headingStr.write(to: logFileUrl!, atomically: true, encoding: String.Encoding.utf8)
+			}
 		} catch {
 			print(error.localizedDescription)
 		}
@@ -58,9 +69,8 @@ class AppState : ObservableObject {
 	/// Called when a peripheral is discovered.
 	/// Returns true to indicate that we should connect to this peripheral and discover its services.
 	func peripheralDiscovered(description: String) -> Bool {
-		print(description)
 		if description.contains("Tilt") || description.contains("Hydrometer") {
-			createLogFile()
+			print(description)
 			return true
 		}
 		return false
@@ -89,6 +99,9 @@ class AppState : ObservableObject {
 	}
 
 	func startBluetoothScanning() -> BluetoothScanner {
+
+		createLogFile()
+
 		let scanner = BluetoothScanner()
 		let interestingServices = [ CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER1),
 									CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER2),

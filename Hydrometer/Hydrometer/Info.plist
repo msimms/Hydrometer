@@ -2,15 +2,9 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CFBundleIdentifier</key>
-	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>App uses continued access to Bluetooth to communicate with the hydrometer.</string>
-	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>App uses Bluetooth to communicate with the hydrometer.</string>
 	<key>NSUbiquitousContainers</key>
 	<dict>
-		<key>iCloud.com.mjs-software.hydrometer</key>
+		<key>iCloud.com.mjs-software.Hydrometer</key>
 		<dict>
 			<key>NSUbiquitousContainerIsDocumentScopePublic</key>
 			<true/>
