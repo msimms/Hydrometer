@@ -15,36 +15,27 @@ class AppState : ObservableObject {
 	@Published var currentGravity: Float = 0
 
 	/// Utility function for building the URL to the log file.
-	func buildLogFileUrl(location: String) throws -> URL? {
+	func buildLogFileUrl() throws -> URL? {
 		
 		var logFileUrl: URL?
 		
-		// Build the URL for the vault's directory. If a location was provided then
-		// use it, otherwise assume the user's iCloud directory.
-		if location.count == 0 {
-			logFileUrl = FileManager.default.url(forUbiquityContainerIdentifier: nil)
-			if logFileUrl == nil {
-				throw LogFileException.runtimeError("iCloud storage is disabled.")
-			}
+		// Build the URL for the application's directory.
+		logFileUrl = FileManager.default.url(forUbiquityContainerIdentifier: nil)
+		if logFileUrl == nil {
+			throw LogFileException.runtimeError("iCloud storage is disabled.")
 		}
-		else {
-			logFileUrl = URL(string: location)
-		}
-		logFileUrl = logFileUrl?.appendingPathComponent("Hydrometer")
+		logFileUrl = logFileUrl?.appendingPathComponent("Documents")
 		try FileManager.default.createDirectory(at: logFileUrl!, withIntermediateDirectories: true, attributes: nil)
 
-		// Build the URL for the vault's master file.
+		// Append the name of the log file to the path.
 		return logFileUrl?.appendingPathComponent("log.csv", isDirectory: false)
 	}
 
 	func createLogFile() {
 		do {
-			let logFileUrl = try buildLogFileUrl(location: "")
+			let logFileUrl = try buildLogFileUrl()
 
 			if !FileManager.default.fileExists(atPath: logFileUrl!.path) {
-
-				// Create the parent directory.
-				try FileManager.default.createDirectory(at: logFileUrl!, withIntermediateDirectories: true, attributes: nil)
 
 				// Write the heading string.
 				let headingStr = "Time\tTemperature\nGravity"
