@@ -47,7 +47,7 @@ class AppState : ObservableObject {
 				try FileManager.default.createDirectory(at: logFileUrl!, withIntermediateDirectories: true, attributes: nil)
 
 				// Write the heading string.
-				let headingStr = ""
+				let headingStr = "Time\tTemperature\nGravity"
 				try headingStr.write(to: logFileUrl!, atomically: true, encoding: String.Encoding.utf8)
 			}
 		} catch {
