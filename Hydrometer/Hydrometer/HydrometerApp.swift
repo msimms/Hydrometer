@@ -11,58 +11,59 @@ import CoreBluetooth
 class AppState : ObservableObject {
 	
 	static let shared = AppState()
-	@Published var currentTemp: Float = 0
-	@Published var currentGravity: Float = 0
+
+	private var logFileUrl: URL?
+	@Published var readingTime: time_t = 0
+	@Published var readingTemp: Float = 0
+	@Published var readingGravity: Float = 0
 
 	/// Utility function for building the URL to the log file.
-	func buildLogFileUrl() throws -> URL? {
-		
-		var logFileUrl: URL?
-		
+	func buildLogFileUrl() throws {
+
 		// Build the URL for the application's directory.
-		logFileUrl = FileManager.default.url(forUbiquityContainerIdentifier: nil)
-		if logFileUrl == nil {
+		self.logFileUrl = FileManager.default.url(forUbiquityContainerIdentifier: nil)
+		if self.logFileUrl == nil {
 			throw LogFileException.runtimeError("iCloud storage is disabled.")
 		}
-		logFileUrl = logFileUrl?.appendingPathComponent("Documents")
-		try FileManager.default.createDirectory(at: logFileUrl!, withIntermediateDirectories: true, attributes: nil)
+		self.logFileUrl = logFileUrl?.appendingPathComponent("Documents")
+		try FileManager.default.createDirectory(at: self.logFileUrl!, withIntermediateDirectories: true, attributes: nil)
 
 		// Append the name of the log file to the path.
-		return logFileUrl?.appendingPathComponent("log.csv", isDirectory: false)
+		self.logFileUrl = self.logFileUrl?.appendingPathComponent("log.csv", isDirectory: false)
 	}
 
-	func createLogFile() {
-		do {
-			let logFileUrl = try buildLogFileUrl()
+	func createLogFile() throws {
+		
+		// If the file doesn't exist then start it with the heading string.
+		if !FileManager.default.fileExists(atPath: self.logFileUrl!.path) {
 
-			if !FileManager.default.fileExists(atPath: logFileUrl!.path) {
-
-				// Write the heading string.
-				let headingStr = "Time\tTemperature\nGravity"
-				try headingStr.write(to: logFileUrl!, atomically: true, encoding: String.Encoding.utf8)
-			}
-		} catch {
-			print(error.localizedDescription)
+			// Write the heading string.
+			let headingStr = "Time\tTemperature\nGravity"
+			try headingStr.write(to: self.logFileUrl!, atomically: true, encoding: String.Encoding.utf8)
 		}
 	}
 
-	func storeReading() {
+	func storeReading() throws {
+		let readingStr = String(format: "%u,%f,%f\n", self.readingTime, self.readingTemp, self.readingGravity)
+		try readingStr.write(to: self.logFileUrl!, atomically: true, encoding: String.Encoding.utf8)
 	}
 	
 	func convertTemperature(temperature: UInt16) -> Float {
-		0.0
+		return Float(temperature)
 	}
 	
 	func convertGravity(gravity: UInt16) -> Float {
-		0.0
+		return Float(gravity) / 1000.0
 	}
 	
 	/// Called when a manufacturer data read.
 	func manufacturerDataRead(data: Data) -> Void {
 		do {
 			let measurement = try decodeHydrometerReading(data: data)
-			let temperature = convertTemperature(temperature: measurement.temperature)
-			let gravity = convertGravity(gravity: measurement.gravity)
+			self.readingTime = time(nil)
+			self.readingTemp = convertTemperature(temperature: measurement.temperature)
+			self.readingGravity = convertGravity(gravity: measurement.gravity)
+			try storeReading()
 		}
 		catch {
 		}
@@ -70,7 +71,12 @@ class AppState : ObservableObject {
 
 	func startBluetoothScanning() -> BluetoothScanner {
 
-		createLogFile()
+		do {
+			try buildLogFileUrl()
+			try createLogFile()
+		} catch {
+			print(error.localizedDescription)
+		}
 
 		// Start scanning for the services that we are interested in.
 		let scanner = BluetoothScanner()
