@@ -8,14 +8,18 @@
 import SwiftUI
 import CoreBluetooth
 
-class AppState : ObservableObject {
+class HydrometerAppState : ObservableObject {
 	
-	static let shared = AppState()
+	static let shared = HydrometerAppState()
 
 	private var logFileUrl: URL?
 	@Published var readingTime: time_t = 0
 	@Published var readingTemp: Float = 0
 	@Published var readingGravity: Float = 0
+
+	/// Constructor
+	private init() {
+	}
 
 	/// Utility function for building the URL to the log file.
 	func buildLogFileUrl() throws {
@@ -87,7 +91,7 @@ class AppState : ObservableObject {
 
 @main
 struct HydrometerApp: App {
-	let state = AppState.shared.startBluetoothScanning()
+	let state = HydrometerAppState.shared.startBluetoothScanning()
 
 	var body: some Scene {
         WindowGroup {

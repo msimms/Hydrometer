@@ -8,10 +8,12 @@
 import SwiftUI
 
 struct ContentView: View {
-    var body: some View {
-		Text("Temperature")
+	@ObservedObject var appModel = HydrometerAppState.shared
+
+	var body: some View {
+		Text("Temperature: \(self.appModel.readingTemp)")
 			.padding()
-		Text("Gravity")
+		Text("Gravity: \(self.appModel.readingGravity)")
 			.padding()
     }
 }
