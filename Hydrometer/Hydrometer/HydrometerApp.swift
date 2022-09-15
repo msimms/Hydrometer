@@ -38,7 +38,7 @@ class AppState : ObservableObject {
 		if !FileManager.default.fileExists(atPath: self.logFileUrl!.path) {
 
 			// Write the heading string.
-			let headingStr = "Time\tTemperature\nGravity"
+			let headingStr = "Time,Temperature,Gravity\n"
 			try headingStr.write(to: self.logFileUrl!, atomically: true, encoding: String.Encoding.utf8)
 		}
 	}
