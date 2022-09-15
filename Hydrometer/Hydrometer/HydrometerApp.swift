@@ -57,35 +57,12 @@ class AppState : ObservableObject {
 		0.0
 	}
 	
-	/// Called when a peripheral is discovered.
-	/// Returns true to indicate that we should connect to this peripheral and discover its services.
-	func peripheralDiscovered(description: String) -> Bool {
-		if description.contains("Tilt") || description.contains("Hydrometer") {
-			print(description)
-			return true
+	/// Called when a manufacturer data read.
+	func manufacturerDataRead(data: Data) -> Void {
+		do {
+			let measurement = try decodeHydrometerReading(data: data)
 		}
-		return false
-	}
-	
-	/// Called when a service is discovered.
-	func serviceDiscovered(serviceId: CBUUID) {
-	}
-	
-	/// Called when a sensor characteristic is updated.
-	func valueUpdated(peripheral: CBPeripheral, serviceId: CBUUID, value: Data) {
-		if  serviceId == CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER1) ||
-			serviceId == CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER2) ||
-			serviceId == CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER3) ||
-			serviceId == CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER4) ||
-			serviceId == CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER5) ||
-			serviceId == CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER6) ||
-			serviceId == CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER7) ||
-			serviceId == CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER8) {
-
-			let (rawTemperature, rawGravity) = decodeHydrometerReading(data: value)
-			self.currentTemp = convertTemperature(temperature: rawTemperature)
-			self.currentGravity = convertGravity(gravity: rawGravity)
-			storeReading()
+		catch {
 		}
 	}
 
@@ -93,21 +70,9 @@ class AppState : ObservableObject {
 
 		createLogFile()
 
-		let scanner = BluetoothScanner()
-		let interestingServices = [ CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER1),
-									CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER2),
-									CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER3),
-									CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER4),
-									CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER5),
-									CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER6),
-									CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER7),
-									CBUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER8) ]
-		
 		// Start scanning for the services that we are interested in.
-		scanner.startScanning(serviceIdsToScanFor: interestingServices,
-							  peripheralCallbacks: [peripheralDiscovered],
-							  serviceCallbacks: [serviceDiscovered],
-							  valueUpdatedCallbacks: [valueUpdated])
+		let scanner = BluetoothScanner()
+		scanner.startScanningForManufactuerData(manufacturerDataRead: [manufacturerDataRead])
 		return scanner
 	}
 }
