@@ -61,6 +61,8 @@ class AppState : ObservableObject {
 	func manufacturerDataRead(data: Data) -> Void {
 		do {
 			let measurement = try decodeHydrometerReading(data: data)
+			let temperature = convertTemperature(temperature: measurement.temperature)
+			let gravity = convertGravity(gravity: measurement.gravity)
 		}
 		catch {
 		}
