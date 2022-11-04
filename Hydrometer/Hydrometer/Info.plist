@@ -14,5 +14,10 @@
 			<string>Any</string>
 		</dict>
 	</dict>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>bluetooth-central</string>
+		<string>processing</string>
+	</array>
 </dict>
 </plist>
