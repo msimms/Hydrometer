@@ -1,17 +1,16 @@
 //
 //  HydrometerApp.swift
-//  Hydrometer
-//
 //  Created by Michael Simms on 8/18/22.
 //
 
 import SwiftUI
-import CoreBluetooth
+import CoreLocation
 
 class HydrometerAppState : ObservableObject {
 	
 	static let shared = HydrometerAppState()
 
+	private var beaconScanner: LocationSensor = LocationSensor()
 	private var logFileUrl: URL?
 	@Published var readingTime: time_t = 0
 	@Published var readingTemp: Float = 0
@@ -48,50 +47,54 @@ class HydrometerAppState : ObservableObject {
 	}
 
 	func storeReading() throws {
-		let readingStr = String(format: "%u,%f,%f\n", self.readingTime, self.readingTemp, self.readingGravity)
-		try readingStr.write(to: self.logFileUrl!, atomically: true, encoding: String.Encoding.utf8)
+		if let fileUpdater = try? FileHandle(forUpdating: self.logFileUrl!) {
+			
+			// Format the time the reading was made into something human readable.
+			let formatter = DateFormatter()
+			formatter.dateFormat = "YYYY-MM-dd HH:mm:ss"
+			let timestamp = formatter.string(from: Date(timeIntervalSince1970: Double(self.readingTime)))
+			
+			// Build the CSV row string.
+			let strToWrite = String(format: "%@,%.1f,%.1f\n", timestamp, self.readingTemp, self.readingGravity)
+			
+			// Seek to the end of the file and write.
+			fileUpdater.seekToEndOfFile()
+			fileUpdater.write(strToWrite.data(using: .utf8)!)
+			fileUpdater.closeFile()
+		}
 	}
-	
-	func convertTemperature(temperature: UInt16) -> Float {
-		return Float(temperature)
-	}
-	
-	func convertGravity(gravity: UInt16) -> Float {
-		return Float(gravity) / 1000.0
-	}
-	
-	/// Called when a manufacturer data read.
-	func manufacturerDataRead(data: Data) -> Void {
+
+	func hydrometerBeaconReceived(beacon: CLBeacon) -> Void {
 		do {
-			let measurement = try decodeHydrometerReading(data: data)
-			self.readingTime = time(nil)
-			self.readingTemp = convertTemperature(temperature: measurement.temperature)
-			self.readingGravity = convertGravity(gravity: measurement.gravity)
-			try storeReading()
+			let now = time(nil)
+			
+			// Only update the document every ten minutes.
+			if now > self.readingTime + 600 {
+				self.readingTime = now
+				self.readingTemp = Float(truncating: beacon.major)
+				self.readingGravity = Float(truncating: beacon.minor)
+				
+				try storeReading()
+			}
 		}
 		catch {
 		}
 	}
 
-	func startBluetoothScanning() -> BluetoothScanner {
-
+	func start() -> HydrometerAppState {
 		do {
 			try buildLogFileUrl()
 			try createLogFile()
 		} catch {
 			print(error.localizedDescription)
 		}
-
-		// Start scanning for the services that we are interested in.
-		let scanner = BluetoothScanner()
-		scanner.startScanningForManufactuerData(manufacturerDataRead: [manufacturerDataRead])
-		return scanner
+		return self
 	}
 }
 
 @main
 struct HydrometerApp: App {
-	let state = HydrometerAppState.shared.startBluetoothScanning()
+	let state = HydrometerAppState.shared.start()
 
 	var body: some Scene {
         WindowGroup {

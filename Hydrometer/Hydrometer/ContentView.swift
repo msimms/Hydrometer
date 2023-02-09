@@ -1,7 +1,5 @@
 //
 //  ContentView.swift
-//  Hydrometer
-//
 //  Created by Michael Simms on 8/18/22.
 //
 
@@ -11,9 +9,12 @@ struct ContentView: View {
 	@ObservedObject var appModel = HydrometerAppState.shared
 
 	var body: some View {
-		Text("Temperature: \(self.appModel.readingTemp)")
+		Text("Current Reading")
+			.bold()
 			.padding()
-		Text("Gravity: \(self.appModel.readingGravity)")
+		Text("Temperature \(String(format: "%.1f", self.appModel.readingTemp))")
+			.padding()
+		Text("Temperature \(String(format: "%.1f", self.appModel.readingGravity))")
 			.padding()
     }
 }

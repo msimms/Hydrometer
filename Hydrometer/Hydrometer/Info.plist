@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app uses the location data to receive beacon data from the hydrometer.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app uses the location data to receive beacon data from the hydrometer.</string>
 	<key>NSUbiquitousContainers</key>
 	<dict>
 		<key>iCloud.com.mjs-software.Hydrometer</key>
@@ -17,6 +21,7 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>bluetooth-central</string>
+		<string>location</string>
 		<string>processing</string>
 	</array>
 </dict>

@@ -1,5 +1,5 @@
 //
-//  VaultException.swift
+//  LogFileException.swift
 //  Created by Michael Simms on 8/20/22.
 //
 
