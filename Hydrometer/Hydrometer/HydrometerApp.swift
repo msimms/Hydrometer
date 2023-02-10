@@ -6,6 +6,9 @@
 import SwiftUI
 import CoreLocation
 
+let PREF_NAME_LOG_FILE_NAME = "Log File Name"
+let DEFAULT_LOG_FILE_NAME = "log.csv"
+
 class HydrometerAppState : ObservableObject {
 	
 	static let shared = HydrometerAppState()
@@ -20,6 +23,20 @@ class HydrometerAppState : ObservableObject {
 	private init() {
 	}
 
+	func setLogFileName(value: String) {
+		let mydefaults: UserDefaults = UserDefaults.standard
+		mydefaults.set(value, forKey: PREF_NAME_LOG_FILE_NAME)
+	}
+	
+	func getLogFileName() -> String {
+		let mydefaults: UserDefaults = UserDefaults.standard
+		let logFileName = mydefaults.string(forKey: PREF_NAME_LOG_FILE_NAME)
+		if logFileName == nil {
+			return DEFAULT_LOG_FILE_NAME
+		}
+		return logFileName!
+	}
+	
 	/// Utility function for building the URL to the log file.
 	func buildLogFileUrl() throws {
 
@@ -32,7 +49,7 @@ class HydrometerAppState : ObservableObject {
 		try FileManager.default.createDirectory(at: self.logFileUrl!, withIntermediateDirectories: true, attributes: nil)
 
 		// Append the name of the log file to the path.
-		self.logFileUrl = self.logFileUrl?.appendingPathComponent("log.csv", isDirectory: false)
+		self.logFileUrl = self.logFileUrl?.appendingPathComponent(self.getLogFileName(), isDirectory: false)
 	}
 
 	func createLogFile() throws {
