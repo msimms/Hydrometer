@@ -27,7 +27,7 @@ struct ContentView: View {
 				Text("Time: \(self.dateFormatter.string(from: Date(timeIntervalSince1970: TimeInterval(self.appModel.readingTime))))")
 				Text("Temperature: \(String(format: "%.1f", self.appModel.readingTemp))")
 					.padding()
-				Text("Specific Gravity: \(String(format: "%.1f", self.appModel.readingGravity))")
+				Text("Specific Gravity: \(String(format: "%.3f", self.appModel.readingGravity))")
 					.padding()
 			}
 			else {

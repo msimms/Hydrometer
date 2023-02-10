@@ -72,7 +72,7 @@ class HydrometerAppState : ObservableObject {
 			let timestamp = formatter.string(from: Date(timeIntervalSince1970: Double(self.readingTime)))
 			
 			// Build the CSV row string.
-			let strToWrite = String(format: "%@,%.1f,%.1f\n", timestamp, self.readingTemp, self.readingGravity)
+			let strToWrite = String(format: "%@,%.1f,%.3f\n", timestamp, self.readingTemp, self.readingGravity)
 			
 			// Seek to the end of the file and write.
 			fileUpdater.seekToEndOfFile()
@@ -89,7 +89,7 @@ class HydrometerAppState : ObservableObject {
 			if now > self.readingTime + 600 {
 				self.readingTime = now
 				self.readingTemp = Float(truncating: beacon.major)
-				self.readingGravity = Float(truncating: beacon.minor)
+				self.readingGravity = Float(truncating: beacon.minor) / 1000.0
 				
 				try storeReading()
 			}
