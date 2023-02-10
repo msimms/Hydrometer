@@ -26,6 +26,9 @@ class HydrometerAppState : ObservableObject {
 	func setLogFileName(value: String) {
 		let mydefaults: UserDefaults = UserDefaults.standard
 		mydefaults.set(value, forKey: PREF_NAME_LOG_FILE_NAME)
+
+		// Update the cached log file URL.
+		let _ = self.start()
 	}
 	
 	func getLogFileName() -> String {
