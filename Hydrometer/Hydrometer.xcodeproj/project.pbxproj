@@ -288,6 +288,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Hydrometer/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "App uses continued access to Bluetooth to communicate with the hydrometer.";
 				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "App uses Bluetooth to communicate with the hydrometer.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -320,6 +321,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Hydrometer/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "App uses continued access to Bluetooth to communicate with the hydrometer.";
 				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "App uses Bluetooth to communicate with the hydrometer.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
