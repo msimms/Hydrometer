@@ -5,6 +5,7 @@
 
 import SwiftUI
 import CoreLocation
+import TabularData
 
 let PREF_NAME_LOG_FILE_NAME = "Log File Name"
 let DEFAULT_LOG_FILE_NAME = "log.csv"
@@ -15,9 +16,11 @@ class HydrometerAppState : ObservableObject {
 
 	private var beaconScanner: LocationSensor = LocationSensor()
 	private var logFileUrl: URL?
-	@Published var readingTime: time_t = 0
-	@Published var readingTemp: Float = 0
-	@Published var readingGravity: Float = 0
+	@Published var currentTime: time_t = 0
+	@Published var currentTemp: Double = 0.0
+	@Published var currentGravity: Double = 0.0
+	@Published var currentAbv: Double = 0.0
+	@Published var sgReadings: Array<Double> = []
 
 	/// Constructor
 	private init() {
@@ -34,6 +37,7 @@ class HydrometerAppState : ObservableObject {
 	func getLogFileName() -> String {
 		let mydefaults: UserDefaults = UserDefaults.standard
 		let logFileName = mydefaults.string(forKey: PREF_NAME_LOG_FILE_NAME)
+
 		if logFileName == nil {
 			return DEFAULT_LOG_FILE_NAME
 		}
@@ -55,6 +59,7 @@ class HydrometerAppState : ObservableObject {
 		self.logFileUrl = self.logFileUrl?.appendingPathComponent(self.getLogFileName(), isDirectory: false)
 	}
 
+	/// Creates the log file if it does not already exist. Adds the column headers when creating.
 	func createLogFile() throws {
 		
 		// If the file doesn't exist then start it with the heading string.
@@ -66,16 +71,24 @@ class HydrometerAppState : ObservableObject {
 		}
 	}
 
-	func storeReading() throws {
+	/// Restore history from the CSV file.
+	func readLogFile() throws -> Array<Double> {
+		let result = try DataFrame(contentsOfCSVFile: self.logFileUrl!)
+		let gravityList = result.columns[2].map({ ($0 as? Double)! })
+		return gravityList
+	}
+
+	/// Adds another row to the log file.
+	func updateLogFile() throws {
 		if let fileUpdater = try? FileHandle(forUpdating: self.logFileUrl!) {
 			
 			// Format the time the reading was made into something human readable.
 			let formatter = DateFormatter()
 			formatter.dateFormat = "YYYY-MM-dd HH:mm:ss"
-			let timestamp = formatter.string(from: Date(timeIntervalSince1970: Double(self.readingTime)))
+			let timestamp = formatter.string(from: Date(timeIntervalSince1970: Double(self.currentTime)))
 			
 			// Build the CSV row string.
-			let strToWrite = String(format: "%@,%.1f,%.3f\n", timestamp, self.readingTemp, self.readingGravity)
+			let strToWrite = String(format: "%@,%.1f,%.3f\n", timestamp, self.currentTemp, self.currentGravity)
 			
 			// Seek to the end of the file and write.
 			fileUpdater.seekToEndOfFile()
@@ -83,18 +96,25 @@ class HydrometerAppState : ObservableObject {
 			fileUpdater.closeFile()
 		}
 	}
+	
+	func calculateAbv(originalSg: Double, currentSg: Double) -> Double {
+		let abv = (76.08 * (originalSg - currentSg) / (1.775 - originalSg)) * (currentSg / 0.794)
+		return abv
+	}
 
 	func hydrometerBeaconReceived(beacon: CLBeacon) -> Void {
 		do {
 			let now = time(nil)
 			
-			// Only update the document every ten minutes.
-			if now > self.readingTime + 600 {
-				self.readingTime = now
-				self.readingTemp = Float(truncating: beacon.major)
-				self.readingGravity = Float(truncating: beacon.minor) / 1000.0
-				
-				try storeReading()
+			// Only update every ten minutes.
+			if now > self.currentTime + 600 {
+				self.currentTime = now
+				self.currentTemp = Double(truncating: beacon.major)
+				self.currentGravity = Double(truncating: beacon.minor) / 1000.0
+				self.sgReadings.append(self.currentGravity)
+				self.currentAbv = self.calculateAbv(originalSg: self.sgReadings[0], currentSg: self.currentGravity)
+
+				try updateLogFile()
 			}
 		}
 		catch {
@@ -105,6 +125,7 @@ class HydrometerAppState : ObservableObject {
 		do {
 			try buildLogFileUrl()
 			try createLogFile()
+			self.sgReadings = try readLogFile()
 		} catch {
 			print(error.localizedDescription)
 		}

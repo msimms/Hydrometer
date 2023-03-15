@@ -23,11 +23,13 @@ struct ContentView: View {
 				.font(.title)
 				.bold()
 				.padding()
-			if self.appModel.readingTime > 0 {
-				Text("Time: \(self.dateFormatter.string(from: Date(timeIntervalSince1970: TimeInterval(self.appModel.readingTime))))")
-				Text("Temperature: \(String(format: "%.1f", self.appModel.readingTemp))")
+			if self.appModel.currentTime > 0 {
+				Text("Time: \(self.dateFormatter.string(from: Date(timeIntervalSince1970: TimeInterval(self.appModel.currentTime))))")
+				Text("Temperature: \(String(format: "%.1f", self.appModel.currentTemp))")
 					.padding()
-				Text("Specific Gravity: \(String(format: "%.3f", self.appModel.readingGravity))")
+				Text("Specific Gravity: \(String(format: "%.3f", self.appModel.currentGravity))")
+					.padding()
+				Text("ABV: \(String(format: "%.3f %%", self.appModel.currentAbv))")
 					.padding()
 			}
 			else {
