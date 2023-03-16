@@ -31,6 +31,13 @@ struct ContentView: View {
 					.padding()
 				Text("ABV: \(String(format: "%.3f %%", self.appModel.currentAbv))")
 					.padding()
+
+				VStack() {
+					if self.appModel.sgReadings.count > 1 {
+						LineGraphView(points: self.appModel.sgReadings, color: .red)
+						Text("SG vs. Elapsed Time")
+					}
+				}
 			}
 			else {
 				Text("No data")

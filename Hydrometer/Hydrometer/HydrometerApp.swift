@@ -16,11 +16,11 @@ class HydrometerAppState : ObservableObject {
 
 	private var beaconScanner: LocationSensor = LocationSensor()
 	private var logFileUrl: URL?
-	@Published var currentTime: time_t = 0
+	@Published var currentTime: UInt64 = 0
 	@Published var currentTemp: Double = 0.0
 	@Published var currentGravity: Double = 0.0
 	@Published var currentAbv: Double = 0.0
-	@Published var sgReadings: Array<Double> = []
+	@Published var sgReadings: Array<(UInt64, Double)> = []
 
 	/// Constructor
 	private init() {
@@ -72,10 +72,21 @@ class HydrometerAppState : ObservableObject {
 	}
 
 	/// Restore history from the CSV file.
-	func readLogFile() throws -> Array<Double> {
+	func readLogFile() throws {
 		let result = try DataFrame(contentsOfCSVFile: self.logFileUrl!)
-		let gravityList = result.columns[2].map({ ($0 as? Double)! })
-		return gravityList
+		if result.columns.count >= 3 {
+			let dateFormatter = DateFormatter()
+			dateFormatter.dateFormat = "YYYY-MM-dd HH:mm:ss"
+
+			let timestampReadings = result.columns[0].map({ UInt64(dateFormatter.date(from: $0 as? String ?? "")?.timeIntervalSince1970 ?? 0) })
+			let gravityReadings = result.columns[2].map({ ($0 as? Double) ?? 0.0 })
+			
+			self.sgReadings = Array(zip(timestampReadings, gravityReadings))
+			self.currentTime = timestampReadings.last!
+			self.currentTemp = (result.columns[1].last as? Double) ?? 0.0
+			self.currentGravity = gravityReadings.last!
+			self.currentAbv = self.calculateAbv(originalSg: self.sgReadings[0].1, currentSg: self.currentGravity)
+		}
 	}
 
 	/// Adds another row to the log file.
@@ -108,11 +119,11 @@ class HydrometerAppState : ObservableObject {
 			
 			// Only update every ten minutes.
 			if now > self.currentTime + 600 {
-				self.currentTime = now
+				self.currentTime = UInt64(now)
 				self.currentTemp = Double(truncating: beacon.major)
 				self.currentGravity = Double(truncating: beacon.minor) / 1000.0
-				self.sgReadings.append(self.currentGravity)
-				self.currentAbv = self.calculateAbv(originalSg: self.sgReadings[0], currentSg: self.currentGravity)
+				self.sgReadings.append((self.currentTime, self.currentGravity))
+				self.currentAbv = self.calculateAbv(originalSg: self.sgReadings[0].1, currentSg: self.currentGravity)
 
 				try updateLogFile()
 			}
@@ -125,7 +136,7 @@ class HydrometerAppState : ObservableObject {
 		do {
 			try buildLogFileUrl()
 			try createLogFile()
-			self.sgReadings = try readLogFile()
+			try readLogFile()
 		} catch {
 			print(error.localizedDescription)
 		}
