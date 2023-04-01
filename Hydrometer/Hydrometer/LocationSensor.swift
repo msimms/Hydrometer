@@ -12,7 +12,6 @@ class LocationSensor : NSObject, CLLocationManagerDelegate {
 	var minAllowedHorizontalAccuracy: CLLocationAccuracy = 0.0
 	var minAllowedVerticalAccuracy: CLLocationAccuracy = 0.0
 	var discardBadDataPoints: Bool = false
-	var hydrometerIds: Array<UUID> = []
 
 	override init() {
 		super.init()
@@ -44,49 +43,14 @@ class LocationSensor : NSObject, CLLocationManagerDelegate {
 	func locationManager(_ manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], in region: CLBeaconRegion) {
 		if beacons.count > 0 {
 			for beacon in beacons {
-				HydrometerAppState.shared.hydrometerBeaconReceived(beacon: beacon, hydrometerIds: self.hydrometerIds)
+				HydrometerAppState.shared.hydrometerBeaconReceived(beacon: beacon)
 			}
 		} else {
 		}
 	}
-	
-	func dataToUUID(data: Data) -> UUID {
-		var uuidStr: String = ""
-		for i in 0...3 {
-			uuidStr += String(data[i], radix: 16)
-		}
-		uuidStr += "-"
-		for i in 4...5 {
-			uuidStr += String(data[i], radix: 16)
-		}
-		uuidStr += "-"
-		for i in 6...7 {
-			uuidStr += String(data[i], radix: 16)
-		}
-		uuidStr += "-"
-		for i in 8...9 {
-			uuidStr += String(data[i], radix: 16)
-		}
-		uuidStr += "-"
-		for i in 10...15 {
-			uuidStr += String(data[i], radix: 16)
-		}
-
-		let uuid8 = UUID(uuidString: uuidStr)!
-		return uuid8
-	}
 
 	func startScanning() {
-		self.hydrometerIds.append(self.dataToUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER1))
-		self.hydrometerIds.append(self.dataToUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER2))
-		self.hydrometerIds.append(self.dataToUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER3))
-		self.hydrometerIds.append(self.dataToUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER4))
-		self.hydrometerIds.append(self.dataToUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER5))
-		self.hydrometerIds.append(self.dataToUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER6))
-		self.hydrometerIds.append(self.dataToUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER7))
-		self.hydrometerIds.append(self.dataToUUID(data: CUSTOM_BT_SERVICE_TILT_HYDROMETER8))
-		
-		for (hydrometerId, hydrometerName) in zip(self.hydrometerIds, HydrometerAppState.shared.hydrometerNames) {
+		for (hydrometerId, hydrometerName) in zip(HYDROMETER_IDS, HYDROMETER_NAMES) {
 			self.locationManager.startMonitoring(for: CLBeaconRegion(uuid: hydrometerId, identifier: hydrometerName))
 			self.locationManager.startRangingBeacons(satisfying: CLBeaconIdentityConstraint(uuid: hydrometerId))
 		}

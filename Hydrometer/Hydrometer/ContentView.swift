@@ -5,9 +5,10 @@
 
 import SwiftUI
 
-struct ContentView: View {
-	@ObservedObject var appModel = HydrometerAppState.shared
-	@State var logFileName: String = HydrometerAppState.shared.hydrometerState.getLogFileName()
+struct HydrometerView: View {
+	var hydrometerName: String
+	@ObservedObject var appModel: HydrometerAppState = HydrometerAppState.shared
+	@State var logFileName: String = ""
 
 	let dateFormatter: DateFormatter = {
 		let df = DateFormatter()
@@ -17,49 +18,57 @@ struct ContentView: View {
 	}()
 
 	var body: some View {
-		TabView {
-			VStack(alignment: .center) {
-				Text("Current Hydrometer Reading")
-					.multilineTextAlignment(.center)
-					.font(.title)
-					.bold()
+		VStack(alignment: .center) {
+			Text("Current Hydrometer Reading")
+				.multilineTextAlignment(.center)
+				.font(.title)
+				.bold()
+				.padding()
+			let hydrometerState = self.appModel.selectedHydrometerByName(name: hydrometerName).start()
+			if hydrometerState.lastUpdatedTime > 0 {
+				Text("Time: \(self.dateFormatter.string(from: Date(timeIntervalSince1970: TimeInterval(hydrometerState.lastUpdatedTime))))")
+				Text("Temperature: \(String(format: "%.1f", hydrometerState.currentTemp))")
 					.padding()
-				if self.appModel.hydrometerState.lastUpdatedTime > 0 {
-					Text("Time: \(self.dateFormatter.string(from: Date(timeIntervalSince1970: TimeInterval(self.appModel.hydrometerState.lastUpdatedTime))))")
-					Text("Temperature: \(String(format: "%.1f", self.appModel.hydrometerState.currentTemp))")
-						.padding()
-					Text("Specific Gravity: \(String(format: "%.3f", self.appModel.hydrometerState.currentGravity))")
-						.padding()
-					Text("ABV: \(String(format: "%.3f %%", self.appModel.hydrometerState.currentAbv))")
-						.padding()
-					
-					VStack() {
-						if self.appModel.hydrometerState.sgReadings.count > 1 {
-							LineGraphView(points: self.appModel.hydrometerState.sgReadings, color: self.appModel.hydrometerState.hydrometerColor)
-							Text("SG vs. Elapsed Time")
-						}
+				Text("Specific Gravity: \(String(format: "%.3f", hydrometerState.currentGravity))")
+					.padding()
+				Text("ABV: \(String(format: "%.3f %%", hydrometerState.currentAbv))")
+					.padding()
+				VStack() {
+					if hydrometerState.sgReadings.count > 1 {
+						LineGraphView(points: hydrometerState.sgReadings, color: hydrometerState.hydrometerColor)
+						Text("SG vs. Elapsed Time")
 					}
 				}
-				else {
-					Text("No data")
-						.padding()
-				}
-				Text("Log File Name")
-					.bold()
-					.padding()
-				TextField("", text: self.$logFileName, axis: .vertical)
-					.onChange(of: self.logFileName) { value in
-						self.appModel.setLogFileName(value: self.logFileName)
-					}
-					.multilineTextAlignment(.center)
+			}
+			else {
+				Text("No data")
 					.padding()
 			}
+			Text("Log File Name")
+				.bold()
+				.padding()
+			TextField("", text: self.$logFileName, axis: .vertical)
+				.onChange(of: self.logFileName) { value in
+					hydrometerState.setLogFileName(value: self.logFileName)
+				}
+				.onAppear() {
+					self.logFileName = hydrometerState.getLogFileName()
+				}
+				.multilineTextAlignment(.center)
+			Spacer()
 		}
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
+struct ContentView: View {
+	var body: some View {
+		TabView {
+			ForEach(Array(zip(HYDROMETER_NAMES, HYDROMETER_COLORS)), id: \.0) { item in
+				HydrometerView(hydrometerName: item.0)
+					.tabItem {
+						Label(item.0, systemImage: "testtube.2")
+					}
+			}
+		}
+	}
 }

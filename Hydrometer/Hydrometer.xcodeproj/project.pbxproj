@@ -14,6 +14,7 @@
 		27196E1F28B16423003F47D8 /* HydrometerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27196E1E28B16423003F47D8 /* HydrometerService.swift */; };
 		27196E2128B19973003F47D8 /* LogFileException.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27196E2028B19973003F47D8 /* LogFileException.swift */; };
 		274E3E642994364B0038CB18 /* LocationSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274E3E632994364B0038CB18 /* LocationSensor.swift */; };
+		2772D98629D8A70D0008E4F3 /* HydrometerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2772D98529D8A70D0008E4F3 /* HydrometerState.swift */; };
 		27FA92AE29C267D100DA23AB /* LineGraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FA92AD29C267D100DA23AB /* LineGraphView.swift */; };
 /* End PBXBuildFile section */
 
@@ -28,6 +29,7 @@
 		27196E1E28B16423003F47D8 /* HydrometerService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HydrometerService.swift; path = ../../LibBluetooth/mac/Source_Swift/HydrometerService.swift; sourceTree = "<group>"; };
 		27196E2028B19973003F47D8 /* LogFileException.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogFileException.swift; sourceTree = "<group>"; };
 		274E3E632994364B0038CB18 /* LocationSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSensor.swift; sourceTree = "<group>"; };
+		2772D98529D8A70D0008E4F3 /* HydrometerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrometerState.swift; sourceTree = "<group>"; };
 		27FA92AD29C267D100DA23AB /* LineGraphView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineGraphView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -66,6 +68,7 @@
 				27196E0128AEA131003F47D8 /* ContentView.swift */,
 				27196DFF28AEA131003F47D8 /* HydrometerApp.swift */,
 				27196E1E28B16423003F47D8 /* HydrometerService.swift */,
+				2772D98529D8A70D0008E4F3 /* HydrometerState.swift */,
 				27FA92AD29C267D100DA23AB /* LineGraphView.swift */,
 				274E3E632994364B0038CB18 /* LocationSensor.swift */,
 				27196E2028B19973003F47D8 /* LogFileException.swift */,
@@ -154,6 +157,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				27196E1F28B16423003F47D8 /* HydrometerService.swift in Sources */,
+				2772D98629D8A70D0008E4F3 /* HydrometerState.swift in Sources */,
 				274E3E642994364B0038CB18 /* LocationSensor.swift in Sources */,
 				27196E0228AEA131003F47D8 /* ContentView.swift in Sources */,
 				27196E2128B19973003F47D8 /* LogFileException.swift in Sources */,
