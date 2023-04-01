@@ -99,7 +99,7 @@ class HydrometerState : ObservableObject {
 			let timestamp = formatter.string(from: Date(timeIntervalSince1970: Double(self.lastUpdatedTime)))
 			
 			// Build the CSV row string.
-			let strToWrite = String(format: "%@,%.1f,%.3f\n", timestamp, self.lastUpdatedTime, self.currentGravity)
+			let strToWrite = String(format: "%@,%.1f,%.3f\n", timestamp, self.currentTemp, self.currentGravity)
 			
 			// Seek to the end of the file and write.
 			fileUpdater.seekToEndOfFile()
