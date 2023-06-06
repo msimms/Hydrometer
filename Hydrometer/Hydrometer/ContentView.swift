@@ -26,13 +26,10 @@ struct HydrometerView: View {
 				.padding()
 			let hydrometerState = self.appModel.selectedHydrometerByName(name: hydrometerName).start()
 			if hydrometerState.lastUpdatedTime > 0 {
-				Text("Time: \(self.dateFormatter.string(from: Date(timeIntervalSince1970: TimeInterval(hydrometerState.lastUpdatedTime))))")
-				Text("Temperature: \(String(format: "%.1f", hydrometerState.currentTemp))")
-					.padding()
+				Text("\(self.dateFormatter.string(from: Date(timeIntervalSince1970: TimeInterval(hydrometerState.lastUpdatedTime))))")
+				Text("Temperature: \(String(format: "%.1f F", hydrometerState.currentTemp))")
 				Text("Specific Gravity: \(String(format: "%.3f", hydrometerState.currentGravity))")
-					.padding()
 				Text("ABV: \(String(format: "%.3f %%", hydrometerState.currentAbv))")
-					.padding()
 				VStack() {
 					if hydrometerState.sgReadings.count > 1 {
 						LineGraphView(points: hydrometerState.sgReadings, color: hydrometerState.hydrometerColor)

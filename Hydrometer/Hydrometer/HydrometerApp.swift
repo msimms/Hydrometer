@@ -8,7 +8,8 @@ import CoreLocation
 import TabularData
 
 let PREF_NAME_LOG_FILE_NAME = "Log File Name"
-let DEFAULT_LOG_FILE_NAME = "log.csv"
+let DEFAULT_LOG_FILE_NAME = "log_"
+let DEFAULT_LOG_FILE_EXTENSION = ".csv"
 let HYDROMETER_NAMES: Array<String> = [ "Red", "Green", "Black", "Purple", "Orange", "Blue", "Yellow", "Pink" ]
 let HYDROMETER_COLORS: Array<Color> = [ .red, .green, .black, .purple, .orange, .blue, .yellow, .pink ]
 var HYDROMETER_IDS: Array<UUID> = []

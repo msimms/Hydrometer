@@ -31,7 +31,7 @@ class HydrometerState : ObservableObject {
 		let logFileName = mydefaults.string(forKey: PREF_NAME_LOG_FILE_NAME)
 		
 		if logFileName == nil {
-			return DEFAULT_LOG_FILE_NAME
+			return DEFAULT_LOG_FILE_NAME + self.hydrometerName + DEFAULT_LOG_FILE_EXTENSION
 		}
 		return logFileName!
 	}
@@ -82,10 +82,14 @@ class HydrometerState : ObservableObject {
 			let gravityReadings = result.columns[2].map({ ($0 as? Double) ?? 0.0 })
 			
 			self.sgReadings = Array(zip(timestampReadings, gravityReadings))
-			self.lastUpdatedTime = timestampReadings.last!
+			if timestampReadings.count > 0 {
+				self.lastUpdatedTime = timestampReadings.last!
+			}
 			self.currentTemp = (result.columns[1].last as? Double) ?? 0.0
-			self.currentGravity = gravityReadings.last!
-			self.currentAbv = self.calculateAbv(originalSg: self.sgReadings[0].1, currentSg: self.currentGravity)
+			if gravityReadings.count > 0 {
+				self.currentGravity = gravityReadings.last!
+				self.currentAbv = self.calculateAbv(originalSg: self.sgReadings[0].1, currentSg: self.currentGravity)
+			}
 		}
 	}
 	
@@ -118,6 +122,9 @@ class HydrometerState : ObservableObject {
 	
 	func calculateAbv(originalSg: Double, currentSg: Double) -> Double {
 		let abv = (76.08 * (originalSg - currentSg) / (1.775 - originalSg)) * (currentSg / 0.794)
+		if abv < 0.01 {
+			return 0.0
+		}
 		return abv
 	}
 	
