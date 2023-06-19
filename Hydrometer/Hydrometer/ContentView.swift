@@ -17,6 +17,10 @@ struct HydrometerView: View {
 		return df
 	}()
 
+	func sgFormatter(num: Double) -> String {
+		return String(format: "%0.3f", num)
+	}
+
 	var body: some View {
 		VStack(alignment: .center) {
 			Text("Current Hydrometer Reading")
@@ -32,7 +36,7 @@ struct HydrometerView: View {
 				Text("ABV: \(String(format: "%.3f %%", hydrometerState.currentAbv))")
 				VStack() {
 					if hydrometerState.sgReadings.count > 1 {
-						LineGraphView(points: hydrometerState.sgReadings, color: hydrometerState.hydrometerColor)
+						LineGraphView(points: hydrometerState.sgReadings, color: hydrometerState.hydrometerColor, formatter: self.sgFormatter)
 						Text("SG vs. Elapsed Time")
 					}
 				}
