@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		27091ABB2A62F4E90013AD48 /* LineGraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27091ABA2A62F4E90013AD48 /* LineGraphView.swift */; };
 		27196E0028AEA131003F47D8 /* HydrometerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27196DFF28AEA131003F47D8 /* HydrometerApp.swift */; };
 		27196E0228AEA131003F47D8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27196E0128AEA131003F47D8 /* ContentView.swift */; };
 		27196E0428AEA132003F47D8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 27196E0328AEA132003F47D8 /* Assets.xcassets */; };
@@ -15,10 +16,10 @@
 		27196E2128B19973003F47D8 /* LogFileException.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27196E2028B19973003F47D8 /* LogFileException.swift */; };
 		274E3E642994364B0038CB18 /* LocationSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274E3E632994364B0038CB18 /* LocationSensor.swift */; };
 		2772D98629D8A70D0008E4F3 /* HydrometerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2772D98529D8A70D0008E4F3 /* HydrometerState.swift */; };
-		27FA92AE29C267D100DA23AB /* LineGraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FA92AD29C267D100DA23AB /* LineGraphView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		27091ABA2A62F4E90013AD48 /* LineGraphView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LineGraphView.swift; path = ../../SimpleSwiftCharts/LineGraphView.swift; sourceTree = "<group>"; };
 		27196DFC28AEA131003F47D8 /* Hydrometer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hydrometer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		27196DFF28AEA131003F47D8 /* HydrometerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrometerApp.swift; sourceTree = "<group>"; };
 		27196E0128AEA131003F47D8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -30,7 +31,6 @@
 		27196E2028B19973003F47D8 /* LogFileException.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogFileException.swift; sourceTree = "<group>"; };
 		274E3E632994364B0038CB18 /* LocationSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSensor.swift; sourceTree = "<group>"; };
 		2772D98529D8A70D0008E4F3 /* HydrometerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrometerState.swift; sourceTree = "<group>"; };
-		27FA92AD29C267D100DA23AB /* LineGraphView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineGraphView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,7 +69,7 @@
 				27196DFF28AEA131003F47D8 /* HydrometerApp.swift */,
 				27196E1E28B16423003F47D8 /* HydrometerService.swift */,
 				2772D98529D8A70D0008E4F3 /* HydrometerState.swift */,
-				27FA92AD29C267D100DA23AB /* LineGraphView.swift */,
+				27091ABA2A62F4E90013AD48 /* LineGraphView.swift */,
 				274E3E632994364B0038CB18 /* LocationSensor.swift */,
 				27196E2028B19973003F47D8 /* LogFileException.swift */,
 				27196E0328AEA132003F47D8 /* Assets.xcassets */,
@@ -162,7 +162,7 @@
 				27196E0228AEA131003F47D8 /* ContentView.swift in Sources */,
 				27196E2128B19973003F47D8 /* LogFileException.swift in Sources */,
 				27196E0028AEA131003F47D8 /* HydrometerApp.swift in Sources */,
-				27FA92AE29C267D100DA23AB /* LineGraphView.swift in Sources */,
+				27091ABB2A62F4E90013AD48 /* LineGraphView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -219,7 +219,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -273,7 +273,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;

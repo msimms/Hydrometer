@@ -19,3 +19,4 @@ git submodule update --init
 ```
 
 ## Version History
+1.0 - Initial release
