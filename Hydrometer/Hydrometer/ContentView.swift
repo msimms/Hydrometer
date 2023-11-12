@@ -32,6 +32,7 @@ struct HydrometerView: View {
 			if hydrometerState.lastUpdatedTime > 0 {
 				Text("\(self.dateFormatter.string(from: Date(timeIntervalSince1970: TimeInterval(hydrometerState.lastUpdatedTime))))")
 				Text("Temperature: \(String(format: "%.1f F", hydrometerState.currentTemp))")
+				Text("Original Gravity: \(String(format: "%.3f", hydrometerState.sgReadings.first?.1 ?? "n/a"))")
 				Text("Specific Gravity: \(String(format: "%.3f", hydrometerState.currentGravity))")
 				Text("ABV: \(String(format: "%.3f %%", hydrometerState.currentAbv))")
 				VStack() {
