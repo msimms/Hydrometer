@@ -6,9 +6,14 @@
 import SwiftUI
 
 struct HydrometerView: View {
+	enum Field: Hashable {
+		case logFileName
+	}
+
 	var hydrometerName: String
 	@ObservedObject var appModel: HydrometerAppState = HydrometerAppState.shared
 	@State var logFileName: String = ""
+	@FocusState private var focusedField: Field?
 
 	let dateFormatter: DateFormatter = {
 		let df = DateFormatter()
@@ -56,8 +61,16 @@ struct HydrometerView: View {
 				.onAppear() {
 					self.logFileName = hydrometerState.getLogFileName()
 				}
+				.focused(self.$focusedField, equals: .logFileName)
 				.multilineTextAlignment(.center)
 			Spacer()
+		}
+		.toolbar {
+			ToolbarItem(placement: .keyboard) {
+				Button("Done") {
+					self.focusedField = nil
+				}
+			}
 		}
     }
 }
