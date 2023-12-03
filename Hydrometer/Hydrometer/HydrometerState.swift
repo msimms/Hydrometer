@@ -62,53 +62,67 @@ class HydrometerState : ObservableObject {
 	/// Creates the log file if it does not already exist. Adds the column headers when creating.
 	func createLogFile() throws {
 		
-		// If the file doesn't exist then start it with the heading string.
-		if !FileManager.default.fileExists(atPath: self.logFileUrl!.path) {
-			
-			// Write the heading string.
-			let headingStr = "Time,Temperature,Gravity\n"
-			try headingStr.write(to: self.logFileUrl!, atomically: true, encoding: String.Encoding.utf8)
+		// Log file name has not been defined.
+		if let unwrappedUrl = self.logFileUrl {
+
+			// If the file doesn't exist then start it with the heading string.
+			if !FileManager.default.fileExists(atPath: unwrappedUrl.path) {
+				
+				// Write the heading string.
+				let headingStr = "Time,Temperature,Gravity\n"
+				try headingStr.write(to: unwrappedUrl, atomically: true, encoding: String.Encoding.utf8)
+			}
 		}
 	}
 	
 	/// Restore history from the CSV file.
 	func readLogFile() throws {
-		let result = try DataFrame(contentsOfCSVFile: self.logFileUrl!)
-		if result.columns.count >= 3 {
-			let dateFormatter = DateFormatter()
-			dateFormatter.dateFormat = "YYYY-MM-dd HH:mm:ss"
-			
-			let timestampReadings = result.columns[0].map({ UInt64(dateFormatter.date(from: $0 as? String ?? "")?.timeIntervalSince1970 ?? 0) })
-			let gravityReadings = result.columns[2].map({ ($0 as? Double) ?? 0.0 })
-			
-			self.sgReadings = Array(zip(timestampReadings, gravityReadings))
-			if timestampReadings.count > 0 {
-				self.lastUpdatedTime = timestampReadings.last!
-			}
-			self.currentTemp = (result.columns[1].last as? Double) ?? 0.0
-			if gravityReadings.count > 0 {
-				self.currentGravity = gravityReadings.last!
-				self.currentAbv = self.calculateAbv(originalSg: self.sgReadings[0].1, currentSg: self.currentGravity)
+		// Log file name has not been defined.
+		if let unwrappedUrl = self.logFileUrl {
+
+			// Read the CSV file.
+			let result = try DataFrame(contentsOfCSVFile: unwrappedUrl)
+			if result.columns.count >= 3 {
+				let dateFormatter = DateFormatter()
+				dateFormatter.dateFormat = "YYYY-MM-dd HH:mm:ss"
+				
+				let timestampReadings = result.columns[0].map({ UInt64(dateFormatter.date(from: $0 as? String ?? "")?.timeIntervalSince1970 ?? 0) })
+				let gravityReadings = result.columns[2].map({ ($0 as? Double) ?? 0.0 })
+				
+				self.sgReadings = Array(zip(timestampReadings, gravityReadings))
+				if timestampReadings.count > 0 {
+					self.lastUpdatedTime = timestampReadings.last!
+				}
+				self.currentTemp = (result.columns[1].last as? Double) ?? 0.0
+				if gravityReadings.count > 0 {
+					self.currentGravity = gravityReadings.last!
+					self.currentAbv = self.calculateAbv(originalSg: self.sgReadings[0].1, currentSg: self.currentGravity)
+				}
 			}
 		}
 	}
 	
 	/// Adds another row to the log file.
 	func updateLogFile() throws {
-		if let fileUpdater = try? FileHandle(forUpdating: self.logFileUrl!) {
+		// Log file name has not been defined.
+		if let unwrappedUrl = self.logFileUrl {
 			
-			// Format the time the reading was made into something human readable.
-			let formatter = DateFormatter()
-			formatter.dateFormat = "YYYY-MM-dd HH:mm:ss"
-			let timestamp = formatter.string(from: Date(timeIntervalSince1970: Double(self.lastUpdatedTime)))
-			
-			// Build the CSV row string.
-			let strToWrite = String(format: "%@,%.1f,%.3f\n", timestamp, self.currentTemp, self.currentGravity)
-			
-			// Seek to the end of the file and write.
-			fileUpdater.seekToEndOfFile()
-			fileUpdater.write(strToWrite.data(using: .utf8)!)
-			fileUpdater.closeFile()
+			// Get a handle to the file.
+			if let fileUpdater = try? FileHandle(forUpdating: unwrappedUrl) {
+				
+				// Format the time the reading was made into something human readable.
+				let formatter = DateFormatter()
+				formatter.dateFormat = "YYYY-MM-dd HH:mm:ss"
+				let timestamp = formatter.string(from: Date(timeIntervalSince1970: Double(self.lastUpdatedTime)))
+				
+				// Build the CSV row string.
+				let strToWrite = String(format: "%@,%.1f,%.3f\n", timestamp, self.currentTemp, self.currentGravity)
+				
+				// Seek to the end of the file and write.
+				fileUpdater.seekToEndOfFile()
+				fileUpdater.write(strToWrite.data(using: .utf8)!)
+				fileUpdater.closeFile()
+			}
 		}
 	}
 	
