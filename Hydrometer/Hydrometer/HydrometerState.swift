@@ -26,9 +26,14 @@ class HydrometerState : ObservableObject {
 		self.hydrometerColor = color
 	}
 	
+	func getLogFileParamName() -> String {
+		return self.hydrometerName + " " + PREF_NAME_LOG_FILE_NAME
+	}
+
 	func getLogFileName() -> String {
 		let mydefaults: UserDefaults = UserDefaults.standard
-		let logFileName = mydefaults.string(forKey: PREF_NAME_LOG_FILE_NAME)
+		let logFileParamName = self.getLogFileParamName()
+		let logFileName = mydefaults.string(forKey: logFileParamName)
 		
 		if logFileName == nil {
 			return DEFAULT_LOG_FILE_NAME + self.hydrometerName + DEFAULT_LOG_FILE_EXTENSION
@@ -38,7 +43,8 @@ class HydrometerState : ObservableObject {
 
 	func setLogFileName(value: String) {
 		let mydefaults: UserDefaults = UserDefaults.standard
-		mydefaults.set(value, forKey: PREF_NAME_LOG_FILE_NAME)
+		let logFileParamName = self.getLogFileParamName()
+		mydefaults.set(value, forKey: logFileParamName)
 		
 		// Update the cached log file URL.
 		let _ = self.start()
@@ -77,6 +83,7 @@ class HydrometerState : ObservableObject {
 	
 	/// Restore history from the CSV file.
 	func readLogFile() throws {
+
 		// Log file name has not been defined.
 		if let unwrappedUrl = self.logFileUrl {
 
@@ -104,6 +111,7 @@ class HydrometerState : ObservableObject {
 	
 	/// Adds another row to the log file.
 	func updateLogFile() throws {
+
 		// Log file name has not been defined.
 		if let unwrappedUrl = self.logFileUrl {
 			
