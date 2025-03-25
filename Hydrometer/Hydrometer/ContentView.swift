@@ -26,6 +26,15 @@ struct HydrometerView: View {
 		return String(format: "%0.3f", num)
 	}
 
+	func formatDate(ts: Double) -> String {
+		let dateFormatter = DateFormatter()
+		dateFormatter.dateStyle = .short
+		dateFormatter.timeStyle = .none
+		
+		let formattedDate = dateFormatter.string(from: Date(timeIntervalSince1970: TimeInterval(ts)))
+		return formattedDate
+	}
+
 	var body: some View {
 		VStack(alignment: .center) {
 			Text("Hydrometer Readings")
@@ -43,8 +52,9 @@ struct HydrometerView: View {
 				Text("ABV: \(String(format: "%.3f %%", hydrometerState.currentAbv))")
 				VStack() {
 					if hydrometerState.sgReadings.count > 1 {
-						LineGraphView(points: hydrometerState.sgReadings, color: hydrometerState.hydrometerColor, formatter: self.sgFormatter)
-						Text("SG vs. Elapsed Time")
+						LineGraphView(points: hydrometerState.sgReadings, color: hydrometerState.hydrometerColor, xFormatter: self.formatDate, yFormatter: self.sgFormatter)
+							.padding()
+						Text("SG vs. Time")
 							.bold()
 					}
 				}
