@@ -10,8 +10,7 @@ struct HydrometerView: View {
 		case logFileName
 	}
 
-	var hydrometerName: String
-	@ObservedObject var appModel: HydrometerAppState = HydrometerAppState.shared
+	@State var hydrometerName: String
 	@State var logFileName: String = ""
 	@FocusState private var focusedField: Field?
 
@@ -42,7 +41,7 @@ struct HydrometerView: View {
 				.font(.title)
 				.bold()
 				.padding()
-			let hydrometerState = self.appModel.selectedHydrometerByName(name: self.hydrometerName).start()
+			let hydrometerState = HydrometerAppState.shared.selectedHydrometerByName(name: self.hydrometerName).start()
 			if hydrometerState.lastUpdatedTime > 0 {
 				Text("\(self.dateFormatter.string(from: Date(timeIntervalSince1970: TimeInterval(hydrometerState.lastUpdatedTime))))")
 					.bold()
@@ -56,6 +55,9 @@ struct HydrometerView: View {
 							.padding()
 						Text("SG vs. Time")
 							.bold()
+					}
+					else {
+						Text("Not enough data to plot")
 					}
 				}
 				.padding()
